@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer & Quest Hub 👾</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Varsayılan Tema: Cyber Neon */
+        :root {
+            --bg: #090d16;
+            --card-bg: rgba(18, 26, 43, 0.85);
+            --accent: #ff2a85;
+            --secondary: #00f0ff;
+            --text: #f0f6fc;
+            --text-muted: #8b949e;
+            --border: rgba(0, 240, 255, 0.2);
+            --box-bg: rgba(255, 255, 255, 0.03);
+            --font-code: 'Courier New', Courier, monospace;
+        }
+
+        /* Mod 2: Cozy Pastel */
+        body.cozy-mode {
+            --bg: #fdf0f5;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --accent: #ec4899;
+            --secondary: #8b5cf6;
+            --text: #2d3748;
+            --text-muted: #718096;
+            --border: rgba(236, 72, 153, 0.2);
+            --box-bg: rgba(236, 72, 153, 0.04);
+        }
+
+        /* Mod 3: Retro Matrix Terminal */
+        body.retro-mode {
+            --bg: #050505;
+            --card-bg: rgba(10, 20, 10, 0.9);
+            --accent: #00ff66;
+            --secondary: #33ff00;
+            --text: #00ff66;
+            --text-muted: #008833;
+            --border: rgba(0, 255, 102, 0.3);
+            --box-bg: rgba(0, 255, 102, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 42, 133, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Top Controls Header */
+        .top-bar {
+            max-width: 850px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-tag {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .vibe-picker {
+            display: flex;
+            gap: 8px;
+        }
+
+        .vibe-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .vibe-btn:hover, .vibe-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 12px rgba(255, 42, 133, 0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Section Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Level Badge */
+        .lvl-badge {
+            font-size: 0.72rem;
+            font-family: var(--font-code);
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--secondary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        /* Grid Layouts */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .skill-card {
+            background: var(--box-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            position: relative;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .skill-icon {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .skill-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .skill-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Quests / Projects */
+        .quest-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quest-item {
+            background: var(--box-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .quest-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quest-title {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quest-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255, 42, 133, 0.15);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .quest-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Interactive Terminal / Console */
+        .terminal-box {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 15px;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: var(--secondary);
+            margin-top: 10px;
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .prompt {
+            color: var(--accent);
+        }
+
+        .interactive-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .cmd-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            font-family: var(--font-code);
+        }
+
+        .cmd-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: var(--text);
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="status-tag">
+            <span class="pulse-dot"></span>
+            <span id="statusText">System Online // Quest Active</span>
+        </div>
+
+        <div class="vibe-picker">
+            <button class="vibe-btn active" onclick="setVibe('cyber')">⚡ Cyber</button>
+            <button class="vibe-btn" onclick="setVibe('cozy')">🧸 Cozy</button>
+            <button class="vibe-btn" onclick="setVibe('retro')">📟 Retro</button>
+            <button class="vibe-btn" onclick="toggleLang()" id="langBtn">EN</button>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Main Banner Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-terminal"></i> <span id="heroTitle">Kreatif İş İstasyonu</span></span>
+                <span class="lvl-badge">LVL 99 DEVELOPER</span>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;" id="heroBio">
+                Yazılım dünyasında kod yazmayı; oyun tasarımı, dijital çizim, animasyon ve hikaye evrenleri kurgulamakla birleştiren multidisipliner bir geliştirici alanı. Estetik, performans ve eğlence tek bir noktada.
+            </p>
+        </div>
+
+        <!-- Technical & Creative Arsenal -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-gamepad"></i> <span id="arsenalTitle">Yetenek & Ekipman Cephaneliği</span></span>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fas fa-code"></i></div>
+                    <div class="skill-name">Frontend Craft</div>
+                    <div class="skill-desc" id="s1">HTML5, CSS3, JS & Python/Flask ile modüler arayüzler.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fas fa-ghost"></i></div>
+                    <div class="skill-name">Oyun & Atmosfer</div>
+                    <div class="skill-desc" id="s2">Post-apokaliptik dünya tasarımları ve anlatı kurgusu.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fas fa-paint-brush"></i></div>
+                    <div class="skill-name">Dijital Sanat</div>
+                    <div class="skill-desc" id="s3">Arayüz illüstrasyonları, karakterler ve görsel detaylar.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="skill-name">Hikaye Evreni</div>
+                    <div class="skill-desc" id="s4">Kreatif metin yazarlığı ve anlatı odaklı kurgular.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quests / Projects -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-scroll"></i> <span id="questsTitle">Görevler & Projeler</span></span>
+            </div>
+            <div class="quest-list">
+                
+                <div class="quest-item">
+                    <div class="quest-head">
+                        <span class="quest-title"><i class="fas fa-cubes"></i> <span id="q1Title">Modüler Web Platformu</span></span>
+                        <span class="quest-tag">FLASK & JS</span>
+                    </div>
+                    <div class="quest-desc" id="q1Desc">
+                        Dinamik içerik akışı, özelleştirilebilir profil kartları ve mini etkileşim alanlarını tek çatı altında toplayan esnek web mimarisi.
+                    </div>
+                </div>
+
+                <div class="quest-item">
+                    <div class="quest-head">
+                        <span class="quest-title"><i class="fas fa-skull-crossbones"></i> <span id="q2Title">Post-Apokaliptik Oyun Konsepti</span></span>
+                        <span class="quest-tag">GAME DESIGN</span>
+                    </div>
+                    <div class="quest-desc" id="q2Desc">
+                        Derin karakter bağları ve stratejik kararlar üzerine kurulu, sürükleyici bir anlatıya sahip bağımsız hayatta kalma projesi kurgusu.
+                    </div>
+                </div>
+
+                <div class="quest-item">
+                    <div class="quest-head">
+                        <span class="quest-title"><i class="fas fa-palette"></i> <span id="q3Title">Görsel & Animasyon Dünyası</span></span>
+                        <span class="quest-tag">CREATIVE ART</span>
+                    </div>
+                    <div class="quest-desc" id="q3Desc">
+                        Yazılımları daha dinamik hale getiren özel illüstrasyonlar, konsept karakter tasarımları ve piksel/dijital detaylar.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Interactive Terminal Widget -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-terminal"></i> <span id="termTitle">İnteraktif Konsol</span></span>
+            </div>
+            <div class="terminal-box">
+                <div class="terminal-line"><span class="prompt">></span> <span id="terminalOutput">Komut çalıştırmak için aşağıdaki butonlara tıkla:</span></div>
+            </div>
+            <div class="interactive-btns">
+                <button class="cmd-btn" onclick="runCommand('roll')">🎲 Zaten Kaç Geldi?</button>
+                <button class="cmd-btn" onclick="runCommand('quote')">💬 Günün Sözü</button>
+                <button class="cmd-btn" onclick="runCommand('coffee')">☕ Kahve Yükle</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+        </div>
+
+    </div>
+
+    <script>
+        // Theme / Vibe Switcher
+        function setVibe(vibe) {
+            document.body.className = '';
+            document.querySelectorAll('.vibe-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (vibe === 'cozy') {
+                document.body.classList.add('cozy-mode');
+                event.target.classList.add('active');
+            } else if (vibe === 'retro') {
+                document.body.classList.add('retro-mode');
+                event.target.classList.add('active');
+            } else {
+                event.target.classList.add('active');
+            }
+        }
+
+        // Interactive Console Commands
+        function runCommand(type) {
+            const out = document.getElementById('terminalOutput');
+            if (type === 'roll') {
+                const roll = Math.floor(Math.random() * 20) + 1;
+                out.innerText = `[D20 ROLL]: ${roll}! ${roll > 10 ? 'Kritik Vuruş Başarılı! 🔥' : 'Tavşan Uykusu Modu 😴'}`;
+            } else if (type === 'quote') {
+                const quotes = [
+                    '"First, solve the problem. Then, write the code."',
+                    '"Design is not just what it looks like, it is how it works."',
+                    '"Code is like humor. When you have to explain it, it’s bad."'
+                ];
+                out.innerText = quotes[Math.floor(Math.random() * quotes.length)];
+            } else if (type === 'coffee') {
+                out.innerText = '[CAF] Kafein Oranı: %100! Kod yazmaya hazır. ☕⚡';
+            }
+        }
+
+        // Language Toggle
+        let currentLang = 'tr';
+        const langData = {
+            tr: {
+                statusText: "System Online // Quest Active",
+                heroTitle: "Kreatif İş İstasyonu",
+                heroBio: "Yazılım dünyasında kod yazmayı; oyun tasarımı, dijital çizim, animasyon ve hikaye evrenleri kurgulamakla birleştiren multidisipliner bir geliştirici alanı. Estetik, performans ve eğlence tek bir noktada.",
+                arsenalTitle: "Yetenek & Ekipman Cephaneliği",
+                s1: "HTML5, CSS3, JS & Python/Flask ile modüler arayüzler.",
+                s2: "Post-apokaliptik dünya tasarımları ve anlatı kurgusu.",
+                s3: "Arayüz illüstrasyonları, karakterler ve görsel detaylar.",
+                s4: "Kreatif metin yazarlığı ve anlatı odaklı kurgular.",
+                questsTitle: "Görevler & Projeler",
+                q1Title: "Modüler Web Platformu",
+                q1Desc: "Dinamik içerik akışı, özelleştirilebilir profil kartları ve mini etkileşim alanlarını tek çatı altında toplayan esnek web mimarisi.",
+                q2Title: "Post-Apokaliptik Oyun Konsepti",
+                q2Desc: "Derin karakter bağları ve stratejik kararlar üzerine kurulu, sürükleyici bir anlatıya sahip bağımsız hayatta kalma projesi kurgusu.",
+                q3Title: "Görsel & Animasyon Dünyası",
+                q3Desc: "Yazılımları daha dinamik hale getiren özel illüstrasyonlar, konsept karakter tasarımları ve piksel/dijital detaylar.",
+                termTitle: "İnteraktif Konsol",
+                langBtn: "EN"
+            },
+            en: {
+                statusText: "System Online // Quest Active",
+                heroTitle: "Creative Workstation",
+                heroBio: "A multidisciplinary space blending front-end code with game design, digital art, animation, and worldbuilding. Crafting aesthetic, performant, and fun experiences.",
+                arsenalTitle: "Skill & Tech Arsenal",
+                s1: "Modular interfaces with HTML5, CSS3, JS & Python/Flask.",
+                s2: "Post-apocalyptic worldbuilding and narrative design.",
+                s3: "UI illustrations, character art, and visual details.",
+                s4: "Creative writing and narrative-driven storytelling.",
+                questsTitle: "Active Quests & Projects",
+                q1Title: "Modular Web Platform",
+                q1Desc: "A flexible web architecture bringing together dynamic content feeds, customizable profile cards, and interactive modules.",
+                q2Title: "Post-Apocalyptic Game Concept",
+                q2Desc: "An indie survival concept featuring deep character bonds, strategic choices, and immersive worldbuilding.",
+                q3Title: "Digital Art & Animation World",
+                q3Desc: "Custom illustrations, character concept art, and digital details to elevate software experiences.",
+                termTitle: "Interactive Console",
+                langBtn: "TR"
+            }
+        };
+
+        function toggleLang() {
+            currentLang = currentLang === 'tr' ? 'en' : 'tr';
+            const data = langData[currentLang];
+            for (let key in data) {
+                const elem = document.getElementById(key);
+                if (elem) elem.innerText = data[key];
+            }
+        }
+    </script>
+</body>
+</html>
